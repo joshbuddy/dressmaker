@@ -1,0 +1,33 @@
+= Dressmaker
+
+== Beautiful templating
+
+I wanted to do really simple application templating, and found Rubigen and Thor were both tied to a command-line interface paradigm, whereas I really just wanted to execute this stuff programmatically. I also wanted application templates to be entirely self-contained.
+
+== Usage
+
+Inside your application
+
+  require 'dressmaker'
+  
+  maker = Dressmaker.new('my-template', 'my-source')
+  maker.generate
+  
+And you're done! If you need to pass in options at generate time, simply pass generate some options.
+
+  maker.generate(:database => 'mysql')
+
+Inside the template directory is a file, called Pattern. Here is a typical Pattern:
+
+  desc "make executable"
+  directory '/bin' do |dir|
+    dir.for('*') { |f|
+      File.chmod(0755, f)
+    }
+  end
+  
+This would make everything inside bin executable.
+
+== Caution!
+
+Everything here is subject to change. This is just an egg of an idea.

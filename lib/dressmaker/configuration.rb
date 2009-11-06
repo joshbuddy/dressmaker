@@ -4,14 +4,16 @@ class Dressmaker
     autoload :DirectoryRule, File.join(File.dirname(__FILE__), 'configuration', 'directory_rule')
 
     attr_accessor :description_holder
+    attr_reader   :options
 
-    def self.load(file)
-      configuration = new
+    def self.load(file, options)
+      configuration = new(options)
       configuration.instance_eval(File.read(file))
       configuration
     end
 
-    def initialize
+    def initialize(options)
+      @options = options
       @rules = []
     end
     

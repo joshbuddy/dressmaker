@@ -24,10 +24,10 @@ class Dressmaker
     "Application generator"
   end
 
-  def generate
+  def generate(options = nil)
     create_destination
     copy_files_from_source
-    run_configuration
+    run_configuration(options)
   end
   
   protected
@@ -46,8 +46,8 @@ class Dressmaker
     (Dir.entries(source) - ['.', '..']).map{|e| File.join(source, e)}
   end
   
-  def run_configuration
-    configuration = Configuration.load(File.join(source, 'Pattern'))
+  def run_configuration(options)
+    configuration = Configuration.load(File.join(source, 'Pattern'), options)
     configuration.process!(destination)
   end
 
