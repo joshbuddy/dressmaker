@@ -1,6 +1,11 @@
 desc "make executable"
-directory '/bin' do |dir|
+directory.matches('/bin') do |dir|
   dir.for('*') { |f|
-    File.chmod(0755, f)
+    f.make_executable!
   }
+end
+
+desc "replace __FILE__ with everyone"
+files.all do |file|
+  file.gsub!('__FILE__', 'everyone')
 end

@@ -3,32 +3,39 @@ require "delegate"
 
 class Dressmaker
   class Configuration
-    class DirectoryRule
+    class DirectoryRule < Rule
 
-      attr_reader :directory, :action
-      attr_accessor :description, :name
+      class All < DirectoryRule
 
-      def initialize(directory, &action)
-        @directory = directory
-        @action = action
+        def matches?(base, target)
+          File.directory?(File.join(base, target))
+        end
+
       end
       
-      def matches?(target)
-        self.name = "Directory (#{File.join(target, directory)})"
-        File.directory?(File.join(target, directory))
+      class Pattern < DirectoryRule
+        
+        attr_reader :pattern, :action
+        
+        def initialize(pattern, &action)
+          @pattern = pattern
+          @action = action
+        end
+
+        def matches?(base, target)
+          File.directory?(File.join(base, target)) && File.fnmatch(pattern, target)
+        end
+        
       end
+
+      attr_accessor :description, :name
 
       def execute!(target)
-        Dressmaker.inform(self, description) if description
-        dir = DirectoryDelegator.new(File.open(File.join(target, directory)))
-        action.call(dir)
-      end
-
-      class DirectoryDelegator < SimpleDelegator
-        def for(pattern)
-          Dir["#{__getobj__.path}/#{pattern}"].each {|e| yield e}
+        Delegators.with(File.join(target)) do |dir|
+          action.call(dir)
         end
       end
+
     end
   end
 end

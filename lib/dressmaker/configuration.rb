@@ -1,10 +1,16 @@
 class Dressmaker
   class Configuration 
     
-    autoload :DirectoryRule, File.join(File.dirname(__FILE__), 'configuration', 'directory_rule')
+    autoload :Delegators,       File.join(File.dirname(__FILE__), 'configuration', 'delegators')
+    autoload :Rule,             File.join(File.dirname(__FILE__), 'configuration', 'rule')
+    autoload :FileRule,         File.join(File.dirname(__FILE__), 'configuration', 'file_rule')
+    autoload :DirectoryRule,    File.join(File.dirname(__FILE__), 'configuration', 'directory_rule')
+    autoload :Matcher,          File.join(File.dirname(__FILE__), 'configuration', 'matcher')
+    autoload :FileMatcher,      File.join(File.dirname(__FILE__), 'configuration', 'file_matcher')
+    autoload :DirectoryMatcher, File.join(File.dirname(__FILE__), 'configuration', 'directory_matcher')
 
     attr_accessor :description_holder
-    attr_reader   :options
+    attr_reader   :options, :rules
 
     def self.load(file, options)
       configuration = new(options)
@@ -17,19 +23,19 @@ class Dressmaker
       @rules = []
     end
     
-    def directory(directory, &block)
-      rule = DirectoryRule.new(directory, &block)
-      if rule.respond_to?(:description=)
-        rule.description = description_holder
-        self.description_holder = nil
-      end
-      @rules << rule
+    def directory
+      DirectoryMatcher.new(self)
+    end
+    
+    def files
+      FileMatcher.new(self)
     end
     
     def process!(target)
-      @rules.each do |rule|
-        if rule.matches?(target)
-          rule.execute!(target)
+      rules.each do |rule|
+        Dir.glob("#{target}/**/*") do |file|
+          rel_file = file[target.size, file.size]
+          rule.inform && rule.execute!(file) if rule.matches?(target, rel_file)
         end
       end
     end
