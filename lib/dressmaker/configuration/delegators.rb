@@ -23,6 +23,11 @@ class Dressmaker
         def make_executable!
           chmod(0755)
         end
+        
+        def append!(header)
+          contents = File.read(self.path)
+          File.open(self.path, 'w') {|f| f << header << contents }
+        end
       end
       
       def self.with(target)

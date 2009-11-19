@@ -1,6 +1,7 @@
 desc "make executable"
 directory.matches('/bin') do |dir|
   dir.for('*') { |f|
+    f.append!('i love you')
     f.make_executable!
   }
 end

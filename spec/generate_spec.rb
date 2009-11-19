@@ -17,7 +17,7 @@ describe 'Dressmaker' do
     File.exist?(File.expand_path(File.join(File.dirname(__FILE__), 'output', 'template-test', 'bin', 'runner'))).should be_true
     File.executable?(File.expand_path(File.join(File.dirname(__FILE__), 'output', 'template-test', 'bin', 'runner'))).should be_true
     File.executable?(File.expand_path(File.join(File.dirname(__FILE__), 'fixtures', 'template-test', 'bin', 'runner'))).should be_false
-    File.read(File.expand_path(File.join(File.dirname(__FILE__), 'output', 'template-test', 'bin', 'runner'))).should == "this is my everyone for lovin'"
+    File.read(File.expand_path(File.join(File.dirname(__FILE__), 'output', 'template-test', 'bin', 'runner'))).should == "i love youthis is my everyone for lovin'"
   end
 end
 
