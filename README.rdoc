@@ -20,9 +20,9 @@ And you're done! If you need to pass in options at generate time, simply pass ge
 Inside the template directory is a file, called Pattern. Here is a typical Pattern:
 
   desc "make executable"
-  directory '/bin' do |dir|
-    dir.for('*') { |f|
-      File.chmod(0755, f)
+  directory.matches('/bin') do |dir|
+    dir.all { |f|
+      f.make_executable!
     }
   end
   
